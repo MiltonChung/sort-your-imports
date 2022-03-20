@@ -10,9 +10,7 @@ export function activate(context: vscode.ExtensionContext) {
   let sort = vscode.commands.registerCommand(
     "sort-your-imports.sortMyImports",
     () => {
-      vscode.window.showInformationMessage(
-        "Hello World from sort-your-imports!"
-      );
+      vscode.window.showInformationMessage("Sorted your imports!");
 
       if (isFileJavascript() || isFileTypescript()) {
         sortInsideEditor();

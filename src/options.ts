@@ -41,6 +41,6 @@ export function getOmitSemicolon(): boolean {
 }
 
 function getExtensionConfig() {
-  console.log(vscode.workspace.getConfiguration("sortMyImports"));
+  // console.log(vscode.workspace.getConfiguration("sortMyImports"));
   return vscode.workspace.getConfiguration("sortMyImports");
 }

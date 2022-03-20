@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import sortImports from "./sortImports";
 
 type ArrayTransformer = (lines: string[]) => string[];
 type SortingAlgorithm = (a: string, b: string) => number;
@@ -7,13 +8,14 @@ export function sortInsideEditor() {
   let editor = vscode.window.activeTextEditor;
 
   if (editor) {
-    // let edits: vscode.TextEdit[] = sortImports(editor.document);
-    // editor.edit((editBuilder) => {
-    //   edits.forEach((edit) => {
-    //     editBuilder.replace(edit.range, edit.newText);
-    //   });
-    // });
-    sortLineLength();
+    let edits: vscode.TextEdit[] = sortImports(editor!.document);
+    editor.edit((editBuilder) => {
+      edits.forEach((edit) => {
+        editBuilder.replace(edit.range, edit.newText);
+      });
+    });
+    console.log("5: ", { editor });
+    // sortLineLength();
   }
 }
 

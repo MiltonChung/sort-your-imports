@@ -7,9 +7,13 @@
     "vscode": "^1.65.0"
   },
   "categories": [
-    "Other"
+    "Formatters"
   ],
   "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
     "onCommand:sort-your-imports.sortMyImports"
   ],
   "main": "./out/extension.js",
@@ -18,6 +22,29 @@
       {
         "command": "sort-your-imports.sortMyImports",
         "title": "Sort My Imports"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "resourceLangId == typescript || resourceLangId == javascript || resourceLangId == javascriptreact || resourceLangId == typescriptreact",
+          "command": "sort-your-imports.sortMyImports",
+          "group": "1_modification"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "when": "resourceLangId == typescript || resourceLangId == javascript || resourceLangId == javascriptreact || resourceLangId == typescriptreact",
+          "command": "sort-your-imports.sortMyImports",
+          "group": "1_modification"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "when": "resourceLangId == typescript || resourceLangId == javascript || resourceLangId == javascriptreact || resourceLangId == typescriptreact",
+        "command": "sort-your-imports.sortMyImports",
+        "key": "f10"
       }
     ]
   },
