@@ -14,3 +14,7 @@ export interface TypescriptImport {
   path: string;
   range: vscode.Range;
 }
+
+export type ArrayTransformer = (lines: string[]) => string[];
+
+export type SortingAlgorithm = (a: string, b: string) => number;

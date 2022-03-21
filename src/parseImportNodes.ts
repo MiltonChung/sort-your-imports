@@ -18,17 +18,13 @@ const importRegexString = `^import\\s+(${combinedImportTypes}\\s+from\\s+)?['"](
 // Group 31 - file path or package
 const importRegex = new RegExp(importRegexString, "gm");
 
-// Group 1 - importName
-// Group 4 - alias
-const destructingImportTokenRegex = new RegExp(destructingImportToken);
-
-export default function parseImportNodes(document: vscode.TextDocument) {
-  let source = document.getText();
+const parseImports = (document: vscode.TextDocument): TypescriptImport[] => {
+  const source = document.getText();
   importRegex.lastIndex = 0;
-  let imports: TypescriptImport[] = [];
+  const imports: TypescriptImport[] = [];
 
   let match: RegExpExecArray | null;
-  while ((match = importRegex.exec(source))) {
+  while ((match = importRegex.exec(source)) !== null) {
     imports.push({
       path: match[31],
       default: match[5] || match[18],
@@ -42,11 +38,15 @@ export default function parseImportNodes(document: vscode.TextDocument) {
   }
 
   return imports;
-}
+};
 
-function parseDestructiveImports(
+// Group 1 - importName
+// Group 4 - alias
+const destructingImportTokenRegex = new RegExp(destructingImportToken);
+
+const parseDestructiveImports = (
   destructiveImports: string
-): DestructedImport[] | undefined {
+): DestructedImport[] | undefined => {
   if (!destructiveImports) {
     return undefined;
   }
@@ -58,4 +58,6 @@ function parseDestructiveImports(
       alias: match![4],
     };
   });
-}
+};
+
+export { parseImports };

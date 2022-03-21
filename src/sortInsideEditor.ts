@@ -1,10 +1,8 @@
 import * as vscode from "vscode";
-import sortImports from "./sortImports";
+import { sortImports } from "./sortImports";
+import { ArrayTransformer, SortingAlgorithm } from "./types";
 
-type ArrayTransformer = (lines: string[]) => string[];
-type SortingAlgorithm = (a: string, b: string) => number;
-
-export function sortInsideEditor() {
+const sortInsideEditor = () => {
   let editor = vscode.window.activeTextEditor;
 
   if (editor) {
@@ -17,7 +15,11 @@ export function sortInsideEditor() {
     console.log("5: ", { editor });
     // sortLineLength();
   }
-}
+};
+
+export { sortInsideEditor };
+
+// =================================================================================================
 
 function makeSorter(algorithm?: SortingAlgorithm): ArrayTransformer {
   return function (lines: string[]): string[] {
@@ -112,5 +114,5 @@ function lineLengthCompare(a: string, b: string): number {
   return aLength > bLength ? 1 : -1;
 }
 
-export const sortLineLength = () =>
-  sortActiveSelection([makeSorter(lineLengthCompare)]);
+// const sortLineLength = () =>
+//   sortActiveSelection([makeSorter(lineLengthCompare)]);
