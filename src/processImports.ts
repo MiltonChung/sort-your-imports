@@ -1,10 +1,12 @@
 import * as options from "./options";
+import * as vscode from "vscode";
 import { TypescriptImport } from "./types";
+import { ArrayTransformer, SortingAlgorithm } from "./types";
 
-export default function processImports(
+const processImports = (
   importClauses: TypescriptImport[]
-): TypescriptImport[] {
-  return importClauses
+): TypescriptImport[] => {
+  const temp = importClauses
     .map((importClause) => {
       if (importClause.namedImports) {
         importClause.namedImports.sort((a, b) =>
@@ -16,12 +18,18 @@ export default function processImports(
       return importClause;
     })
     .sort(compareImportClauses);
-}
 
-function compareImportClauses(a: TypescriptImport, b: TypescriptImport) {
+  console.log(temp);
+  return temp;
+};
+
+const compareImportClauses = (
+  a: TypescriptImport,
+  b: TypescriptImport
+): number => {
   if (options.getSortOption() === "path") {
     return comparePath(a, b) || compareCaseInsensitive(a.path, b.path);
-  } else {
+  } else if (options.getSortOption() === "importName") {
     return (
       compareImportType(a, b) ||
       (a.namespace && compareCaseInsensitive(a.namespace, b.namespace || "")) ||
@@ -34,18 +42,26 @@ function compareImportClauses(a: TypescriptImport, b: TypescriptImport) {
         )) ||
       comparePath(a, b)
     );
+  } else {
+    return compareLineLength(a, b) || compareCaseInsensitive(a.path, b.path);
   }
-}
+};
 
-function compareCaseInsensitive(a: string, b = "") {
+// Compare Line Length
+const compareLineLength = (a: TypescriptImport, b: TypescriptImport): number =>
+  a.length - b.length;
+
+// Compare Case Insensitive
+const compareCaseInsensitive = (a: string, b = ""): number => {
   return a.localeCompare(b, "en", { sensitivity: "base" });
-}
+};
 
-function comparePath(a: TypescriptImport, b: TypescriptImport) {
+// Compare Path
+const comparePath = (a: TypescriptImport, b: TypescriptImport): number => {
   return getPathPriority(a.path) - getPathPriority(b.path);
-}
+};
 
-function getPathPriority(path: string) {
+const getPathPriority = (path: string): number => {
   let sortOrder = options.getPathSortOrdering();
   if (/^\.\//.test(path)) {
     return sortOrder.indexOf("relativeDownLevel");
@@ -54,13 +70,17 @@ function getPathPriority(path: string) {
   } else {
     return sortOrder.indexOf("package");
   }
-}
+};
 
-function compareImportType(a: TypescriptImport, b: TypescriptImport) {
+// Compare Imporr Type
+const compareImportType = (
+  a: TypescriptImport,
+  b: TypescriptImport
+): number => {
   return getImportTypePriority(a) - getImportTypePriority(b);
-}
+};
 
-function getImportTypePriority(importClause: TypescriptImport) {
+const getImportTypePriority = (importClause: TypescriptImport): number => {
   if (importClause.namespace) {
     return 0;
   } else if (importClause.default) {
@@ -70,4 +90,102 @@ function getImportTypePriority(importClause: TypescriptImport) {
   } else {
     return 3;
   }
-}
+};
+
+export { processImports };
+
+// function makeSorter(algorithm?: SortingAlgorithm): ArrayTransformer {
+//   return function (lines: string[]): string[] {
+//     return lines.sort(algorithm);
+//   };
+// }
+
+// function sortActiveSelection(
+//   transformers: ArrayTransformer[]
+// ): Thenable<boolean> | undefined {
+//   const textEditor = vscode.window.activeTextEditor;
+//   if (!textEditor) {
+//     return undefined;
+//   }
+//   const selection = textEditor.selection;
+
+//   if (
+//     selection.isEmpty &&
+//     vscode.workspace.getConfiguration("sortLines").get("sortEntireFile") ===
+//       true
+//   ) {
+//     return sortLines(
+//       textEditor,
+//       0,
+//       textEditor.document.lineCount - 1,
+//       transformers
+//     );
+//   }
+
+//   if (selection.isSingleLine) {
+//     return undefined;
+//   }
+//   return sortLines(
+//     textEditor,
+//     selection.start.line,
+//     selection.end.line,
+//     transformers
+//   );
+// }
+
+// function sortLines(
+//   textEditor: vscode.TextEditor,
+//   startLine: number,
+//   endLine: number,
+//   transformers: ArrayTransformer[]
+// ): Thenable<boolean> {
+//   let lines: string[] = [];
+//   for (let i = startLine; i <= endLine; i++) {
+//     lines.push(textEditor.document.lineAt(i).text);
+//   }
+
+//   // Remove blank lines in selection
+//   if (
+//     vscode.workspace.getConfiguration("sortLines").get("filterBlankLines") ===
+//     true
+//   ) {
+//     removeBlanks(lines);
+//   }
+
+//   lines = transformers.reduce(
+//     (currentLines, transform) => transform(currentLines),
+//     lines
+//   );
+
+//   return textEditor.edit((editBuilder) => {
+//     const range = new vscode.Range(
+//       startLine,
+//       0,
+//       endLine,
+//       textEditor.document.lineAt(endLine).text.length
+//     );
+//     editBuilder.replace(range, lines.join("\n"));
+//   });
+// }
+
+// function removeBlanks(lines: string[]): void {
+//   for (let i = 0; i < lines.length; ++i) {
+//     if (lines[i].trim() === "") {
+//       lines.splice(i, 1);
+//       i--;
+//     }
+//   }
+// }
+
+// function lineLengthCompare(a: string, b: string): number {
+//   // Use Array.from so that multi-char characters count as 1 each
+//   const aLength = Array.from(a).length;
+//   const bLength = Array.from(b).length;
+//   if (aLength === bLength) {
+//     return 0;
+//   }
+//   return aLength > bLength ? 1 : -1;
+// }
+
+// const sortLineLength = () =>
+//   sortActiveSelection([makeSorter(lineLengthCompare)]);

@@ -13,6 +13,7 @@ export interface TypescriptImport {
   namespace?: string;
   path: string;
   range: vscode.Range;
+  length: number;
 }
 
 export type ArrayTransformer = (lines: string[]) => string[];

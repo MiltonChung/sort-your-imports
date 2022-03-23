@@ -25,6 +25,7 @@ const parseImports = (document: vscode.TextDocument): TypescriptImport[] => {
 
   let match: RegExpExecArray | null;
   while ((match = importRegex.exec(source)) !== null) {
+    console.log(importRegex.lastIndex - match.index);
     imports.push({
       path: match[31],
       default: match[5] || match[18],
@@ -34,6 +35,7 @@ const parseImports = (document: vscode.TextDocument): TypescriptImport[] => {
         document.positionAt(match.index),
         document.positionAt(importRegex.lastIndex)
       ),
+      length: importRegex.lastIndex - match.index,
     });
   }
 
