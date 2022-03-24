@@ -14,28 +14,48 @@
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
     "onLanguage:typescriptreact",
-    "onCommand:sort-your-imports.sortMyImports"
+    "onCommand:sort-your-imports.sortMyImportsOnKey"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "sort-your-imports.sortMyImports",
-        "title": "Sort My Imports"
+        "command": "sort-your-imports.sortMyImportsOnKey",
+        "title": "Sort My Imports (Entire File)"
+      },
+      {
+        "command": "sort-your-imports.sortMyImportsOnClick",
+        "title": "Sort My Imports: Sort selected imports"
       }
     ],
+    "configuration": {
+      "type": "object",
+      "title": "Sort My Imports",
+      "properties": {
+        "sortLines.filterBlankLines": {
+          "type": "boolean",
+          "default": false,
+          "description": "Filter out blank (empty or whitespace-only) lines."
+        },
+        "sortLines.sortEntireFile": {
+          "type": "boolean",
+          "default": false,
+          "description": "Sort entire file if no selection is active."
+        }
+      }
+    },
     "menus": {
       "editor/context": [
         {
           "when": "resourceLangId == typescript || resourceLangId == javascript || resourceLangId == javascriptreact || resourceLangId == typescriptreact",
-          "command": "sort-your-imports.sortMyImports",
+          "command": "sort-your-imports.sortMyImportsOnClick",
           "group": "1_modification"
         }
       ],
       "editor/title/context": [
         {
           "when": "resourceLangId == typescript || resourceLangId == javascript || resourceLangId == javascriptreact || resourceLangId == typescriptreact",
-          "command": "sort-your-imports.sortMyImports",
+          "command": "sort-your-imports.sortMyImportsOnClick",
           "group": "1_modification"
         }
       ]
@@ -43,7 +63,7 @@
     "keybindings": [
       {
         "when": "resourceLangId == typescript || resourceLangId == javascript || resourceLangId == javascriptreact || resourceLangId == typescriptreact",
-        "command": "sort-your-imports.sortMyImports",
+        "command": "sort-your-imports.sortMyImportsOnKey",
         "key": "f10"
       }
     ]

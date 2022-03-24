@@ -1,23 +1,32 @@
 import * as vscode from "vscode";
 import { sortImports } from "./sortImports";
+import { sortSelectedImports } from "./sortSelectedImports";
 
-const sortInsideEditor = () => {
-  let editor = vscode.window.activeTextEditor;
-
-  console.log("beginning", editor);
+const sortInsideEditorOnKey = (): boolean => {
+  const editor = vscode.window.activeTextEditor;
 
   if (editor) {
-    let edits: vscode.TextEdit[] = sortImports(editor!.document);
+    const edits: vscode.TextEdit[] = sortImports(editor.document);
     editor.edit((editBuilder) => {
       edits.forEach((edit) => {
         editBuilder.replace(edit.range, edit.newText);
       });
     });
-    console.log("5: ", { editor });
-    // sortLineLength();
+    return true;
   }
+
+  return false;
 };
 
-export { sortInsideEditor };
+const sortInsideEditorOnClick = (): boolean => {
+  const editor = vscode.window.activeTextEditor;
 
-// =================================================================================================
+  if (editor) {
+    sortSelectedImports();
+    return true;
+  }
+
+  return false;
+};
+
+export { sortInsideEditorOnKey, sortInsideEditorOnClick };

@@ -1,24 +1,42 @@
 import * as vscode from "vscode";
-import { sortInsideEditor } from "./sortInsideEditor";
 import { isFileJavascript, isFileTypescript } from "./util";
+import {
+  sortInsideEditorOnClick,
+  sortInsideEditorOnKey,
+} from "./sortInsideEditor";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log(
     'Congratulations, your extension "sort-your-imports" is now active!'
   );
 
-  let sort = vscode.commands.registerCommand(
-    "sort-your-imports.sortMyImports",
+  let sortOnKey = vscode.commands.registerCommand(
+    "sort-your-imports.sortMyImportsOnKey",
     () => {
-      vscode.window.showInformationMessage("Sorted your imports!");
-
       if (isFileJavascript() || isFileTypescript()) {
-        sortInsideEditor();
+        if (sortInsideEditorOnKey()) {
+          vscode.window.showInformationMessage("Sorted your imports!");
+        } else {
+          vscode.window.showErrorMessage("Could not sort your imports!");
+        }
       }
     }
   );
 
-  context.subscriptions.push(sort);
+  const sortOnClick = vscode.commands.registerCommand(
+    "sort-your-imports.sortMyImportsOnClick",
+    () => {
+      if (isFileJavascript() || isFileTypescript()) {
+        if (sortInsideEditorOnClick()) {
+          vscode.window.showInformationMessage("Sorted your imports!");
+        } else {
+          vscode.window.showErrorMessage("Could not sort your imports!");
+        }
+      }
+    }
+  );
+
+  context.subscriptions.push(sortOnKey, sortOnClick);
 }
 
 export function deactivate() {}

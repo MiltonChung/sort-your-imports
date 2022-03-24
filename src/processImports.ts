@@ -32,8 +32,12 @@ const compareImportClauses = (
   } else if (options.getSortOption() === "importName") {
     return (
       compareImportType(a, b) ||
-      (a.namespace && compareCaseInsensitive(a.namespace, b.namespace || "")) ||
-      (a.default && compareCaseInsensitive(a.default, b.default || "")) ||
+      (a.namespace &&
+        b.namespace &&
+        compareCaseInsensitive(a.namespace, b.namespace)) ||
+      (a.default &&
+        b.default &&
+        compareCaseInsensitive(a.default, b.default)) ||
       (a.namedImports &&
         b.namedImports &&
         compareCaseInsensitive(
@@ -47,16 +51,16 @@ const compareImportClauses = (
   }
 };
 
-// Compare Line Length
+// Compare Line Length ==============
 const compareLineLength = (a: TypescriptImport, b: TypescriptImport): number =>
   a.length - b.length;
 
-// Compare Case Insensitive
+// Compare Case Insensitive ==============
 const compareCaseInsensitive = (a: string, b = ""): number => {
   return a.localeCompare(b, "en", { sensitivity: "base" });
 };
 
-// Compare Path
+// Compare Path ==============
 const comparePath = (a: TypescriptImport, b: TypescriptImport): number => {
   return getPathPriority(a.path) - getPathPriority(b.path);
 };
@@ -72,7 +76,7 @@ const getPathPriority = (path: string): number => {
   }
 };
 
-// Compare Imporr Type
+// Compare Import Type ==============
 const compareImportType = (
   a: TypescriptImport,
   b: TypescriptImport
@@ -93,99 +97,3 @@ const getImportTypePriority = (importClause: TypescriptImport): number => {
 };
 
 export { processImports };
-
-// function makeSorter(algorithm?: SortingAlgorithm): ArrayTransformer {
-//   return function (lines: string[]): string[] {
-//     return lines.sort(algorithm);
-//   };
-// }
-
-// function sortActiveSelection(
-//   transformers: ArrayTransformer[]
-// ): Thenable<boolean> | undefined {
-//   const textEditor = vscode.window.activeTextEditor;
-//   if (!textEditor) {
-//     return undefined;
-//   }
-//   const selection = textEditor.selection;
-
-//   if (
-//     selection.isEmpty &&
-//     vscode.workspace.getConfiguration("sortLines").get("sortEntireFile") ===
-//       true
-//   ) {
-//     return sortLines(
-//       textEditor,
-//       0,
-//       textEditor.document.lineCount - 1,
-//       transformers
-//     );
-//   }
-
-//   if (selection.isSingleLine) {
-//     return undefined;
-//   }
-//   return sortLines(
-//     textEditor,
-//     selection.start.line,
-//     selection.end.line,
-//     transformers
-//   );
-// }
-
-// function sortLines(
-//   textEditor: vscode.TextEditor,
-//   startLine: number,
-//   endLine: number,
-//   transformers: ArrayTransformer[]
-// ): Thenable<boolean> {
-//   let lines: string[] = [];
-//   for (let i = startLine; i <= endLine; i++) {
-//     lines.push(textEditor.document.lineAt(i).text);
-//   }
-
-//   // Remove blank lines in selection
-//   if (
-//     vscode.workspace.getConfiguration("sortLines").get("filterBlankLines") ===
-//     true
-//   ) {
-//     removeBlanks(lines);
-//   }
-
-//   lines = transformers.reduce(
-//     (currentLines, transform) => transform(currentLines),
-//     lines
-//   );
-
-//   return textEditor.edit((editBuilder) => {
-//     const range = new vscode.Range(
-//       startLine,
-//       0,
-//       endLine,
-//       textEditor.document.lineAt(endLine).text.length
-//     );
-//     editBuilder.replace(range, lines.join("\n"));
-//   });
-// }
-
-// function removeBlanks(lines: string[]): void {
-//   for (let i = 0; i < lines.length; ++i) {
-//     if (lines[i].trim() === "") {
-//       lines.splice(i, 1);
-//       i--;
-//     }
-//   }
-// }
-
-// function lineLengthCompare(a: string, b: string): number {
-//   // Use Array.from so that multi-char characters count as 1 each
-//   const aLength = Array.from(a).length;
-//   const bLength = Array.from(b).length;
-//   if (aLength === bLength) {
-//     return 0;
-//   }
-//   return aLength > bLength ? 1 : -1;
-// }
-
-// const sortLineLength = () =>
-//   sortActiveSelection([makeSorter(lineLengthCompare)]);
