@@ -1,4 +1,6 @@
 import * as vscode from "vscode";
+import * as options from "./options";
+import { compareLineLength } from "./sortingAlgorithms";
 import { SortingAlgorithm, ArrayTransformer } from "./types";
 
 function makeSorter(algorithm?: SortingAlgorithm): ArrayTransformer {
@@ -16,11 +18,7 @@ function sortActiveSelection(
   }
   const selection = textEditor.selection;
 
-  if (
-    selection.isEmpty &&
-    vscode.workspace.getConfiguration("sortLines").get("sortEntireFile") ===
-      true
-  ) {
+  if (selection.isEmpty && options.getSortEntireFile() === true) {
     return sortLines(
       textEditor,
       0,
@@ -84,17 +82,7 @@ function removeBlanks(lines: string[]): void {
   }
 }
 
-function lineLengthCompare(a: string, b: string): number {
-  // Use Array.from so that multi-char characters count as 1 each
-  const aLength = Array.from(a).length;
-  const bLength = Array.from(b).length;
-  if (aLength === bLength) {
-    return 0;
-  }
-  return aLength > bLength ? 1 : -1;
-}
-
 const sortSelectedImports = () =>
-  sortActiveSelection([makeSorter(lineLengthCompare)]);
+  sortActiveSelection([makeSorter(compareLineLength)]);
 
 export { sortSelectedImports };

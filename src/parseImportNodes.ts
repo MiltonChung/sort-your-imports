@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as options from "./options";
 import { DestructedImport, TypescriptImport } from "./types";
 
 const name = `((?!\\d)(?:(?!\\s)[$\\w\\u0080-\\uFFFF]|\\\\u[\\da-fA-F]{4}|\\\\u\\{[\\da-fA-F]+\\})+)`;
@@ -18,14 +19,14 @@ const importRegexString = `^import\\s+(${combinedImportTypes}\\s+from\\s+)?['"](
 // Group 31 - file path or package
 const importRegex = new RegExp(importRegexString, "gm");
 
-const parseImports = (document: vscode.TextDocument): TypescriptImport[] => {
+const parseKeyImports = (document: vscode.TextDocument): TypescriptImport[] => {
   const source = document.getText();
+  console.log({ source });
   importRegex.lastIndex = 0;
   const imports: TypescriptImport[] = [];
 
   let match: RegExpExecArray | null;
   while ((match = importRegex.exec(source)) !== null) {
-    console.log(importRegex.lastIndex - match.index);
     imports.push({
       path: match[31],
       default: match[5] || match[18],
@@ -34,6 +35,44 @@ const parseImports = (document: vscode.TextDocument): TypescriptImport[] => {
       range: new vscode.Range(
         document.positionAt(match.index),
         document.positionAt(importRegex.lastIndex)
+      ),
+      length: importRegex.lastIndex - match.index,
+    });
+  }
+
+  return imports;
+};
+
+const parseSelectedImports = (
+  selection: vscode.Selection,
+  editor: vscode.TextEditor
+): TypescriptImport[] => {
+  importRegex.lastIndex = 0;
+  const imports: TypescriptImport[] = [];
+
+  let startLine, endLine;
+
+  if (selection.isEmpty && options.getSortEntireFile() === true) {
+    startLine = editor.document.lineAt(0);
+    endLine = editor.document.lineAt(editor.document.lineCount - 1);
+  } else {
+    startLine = editor.document.lineAt(selection.start.line);
+    endLine = editor.document.lineAt(selection.end.line);
+  }
+
+  let textRange = new vscode.Range(startLine.range.start, endLine.range.end);
+  var text = editor.document.getText(textRange);
+
+  let match: RegExpExecArray | null;
+  while ((match = importRegex.exec(text)) !== null) {
+    imports.push({
+      path: match[31],
+      default: match[5] || match[18],
+      namedImports: parseDestructiveImports(match[6] || match[19]),
+      namespace: match[3],
+      range: new vscode.Range(
+        editor.document.positionAt(match.index),
+        editor.document.positionAt(importRegex.lastIndex)
       ),
       length: importRegex.lastIndex - match.index,
     });
@@ -62,4 +101,4 @@ const parseDestructiveImports = (
   });
 };
 
-export { parseImports };
+export { parseKeyImports, parseSelectedImports };

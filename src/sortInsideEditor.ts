@@ -1,32 +1,47 @@
 import * as vscode from "vscode";
-import { sortImports } from "./sortImports";
+import writeImports from "./writeImports";
+import { parseKeyImports, parseSelectedImports } from "./parseImportNodes";
+import { processImports } from "./processImports";
 import { sortSelectedImports } from "./sortSelectedImports";
 
 const sortInsideEditorOnKey = (): boolean => {
   const editor = vscode.window.activeTextEditor;
-
-  if (editor) {
-    const edits: vscode.TextEdit[] = sortImports(editor.document);
-    editor.edit((editBuilder) => {
-      edits.forEach((edit) => {
-        editBuilder.replace(edit.range, edit.newText);
-      });
-    });
-    return true;
+  if (!editor) {
+    return false;
   }
 
-  return false;
+  let imports = parseKeyImports(editor.document);
+  imports = processImports(imports);
+  const sortedImportText = writeImports(imports);
+
+  const edits: vscode.TextEdit[] = imports.map(
+    (importClause: { range: vscode.Range }) =>
+      vscode.TextEdit.delete(importClause.range)
+  );
+
+  edits.push(
+    vscode.TextEdit.insert(new vscode.Position(0, 0), sortedImportText)
+  );
+
+  editor.edit((editBuilder) => {
+    edits.forEach((edit) => {
+      editBuilder.replace(edit.range, edit.newText);
+    });
+  });
+  return true;
 };
 
 const sortInsideEditorOnClick = (): boolean => {
   const editor = vscode.window.activeTextEditor;
-
-  if (editor) {
-    sortSelectedImports();
-    return true;
+  if (!editor) {
+    return false;
   }
+  const selection = editor.selection;
 
-  return false;
+  let imports = parseSelectedImports(selection, editor);
+  console.log(imports);
+  sortSelectedImports();
+  return true;
 };
 
 export { sortInsideEditorOnKey, sortInsideEditorOnClick };

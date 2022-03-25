@@ -40,6 +40,10 @@ export function getOmitSemicolon(): boolean {
   return getExtensionConfig().get("omitSemicolon") as boolean;
 }
 
+export const getSortEntireFile = (): boolean => {
+  return getExtensionConfig().get("sortEntireFile") as boolean;
+};
+
 function getExtensionConfig() {
   // console.log(vscode.workspace.getConfiguration("sortMyImports"));
   return vscode.workspace.getConfiguration("sortMyImports");
