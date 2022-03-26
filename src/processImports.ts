@@ -22,8 +22,6 @@ const processImports = (
       return importClause;
     })
     .sort(compareImportClauses);
-
-  console.log(temp);
   return temp;
 };
 

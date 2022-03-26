@@ -21,7 +21,6 @@ const importRegex = new RegExp(importRegexString, "gm");
 
 const parseKeyImports = (document: vscode.TextDocument): TypescriptImport[] => {
   const source = document.getText();
-  console.log({ source });
   importRegex.lastIndex = 0;
   const imports: TypescriptImport[] = [];
 
@@ -37,6 +36,7 @@ const parseKeyImports = (document: vscode.TextDocument): TypescriptImport[] => {
         document.positionAt(importRegex.lastIndex)
       ),
       length: importRegex.lastIndex - match.index,
+      text: match[0],
     });
   }
 
@@ -44,27 +44,19 @@ const parseKeyImports = (document: vscode.TextDocument): TypescriptImport[] => {
 };
 
 const parseSelectedImports = (
-  selection: vscode.Selection,
-  editor: vscode.TextEditor
+  editor: vscode.TextEditor,
+  startLine: vscode.TextLine,
+  endLine: vscode.TextLine
 ): TypescriptImport[] => {
   importRegex.lastIndex = 0;
   const imports: TypescriptImport[] = [];
 
-  let startLine, endLine;
-
-  if (selection.isEmpty && options.getSortEntireFile() === true) {
-    startLine = editor.document.lineAt(0);
-    endLine = editor.document.lineAt(editor.document.lineCount - 1);
-  } else {
-    startLine = editor.document.lineAt(selection.start.line);
-    endLine = editor.document.lineAt(selection.end.line);
-  }
-
-  let textRange = new vscode.Range(startLine.range.start, endLine.range.end);
-  var text = editor.document.getText(textRange);
+  const textRange = new vscode.Range(startLine.range.start, endLine.range.end);
+  const text = editor.document.getText(textRange);
 
   let match: RegExpExecArray | null;
   while ((match = importRegex.exec(text)) !== null) {
+    console.log({ match });
     imports.push({
       path: match[31],
       default: match[5] || match[18],
@@ -75,6 +67,7 @@ const parseSelectedImports = (
         editor.document.positionAt(importRegex.lastIndex)
       ),
       length: importRegex.lastIndex - match.index,
+      text: match[0],
     });
   }
 

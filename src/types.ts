@@ -11,6 +11,7 @@ export interface TypescriptImport {
   default?: string;
   namedImports?: DestructedImport[];
   namespace?: string;
+  text: string;
   path: string;
   range: vscode.Range;
   length: number;
