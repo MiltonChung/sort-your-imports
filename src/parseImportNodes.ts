@@ -56,7 +56,6 @@ const parseSelectedImports = (
 
   let match: RegExpExecArray | null;
   while ((match = importRegex.exec(text)) !== null) {
-    console.log({ match });
     imports.push({
       path: match[31],
       default: match[5] || match[18],

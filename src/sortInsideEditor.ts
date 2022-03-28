@@ -53,7 +53,22 @@ const sortInsideEditorOnClick = (): boolean => {
 
   let imports = parseSelectedImports(editor, startLine, endLine);
   imports = processImports(imports);
-  console.log("1", { imports });
+
+  let lines: string[] = [];
+
+  for (let i = 0; i < imports.length; i++) {
+    lines.push(imports[i].text.replace(/(\r\n|\n|\r)/gm, ""));
+  }
+
+  if (
+    lines.length !==
+    endLine.range.start.line - startLine.range.start.line + 1
+  ) {
+    vscode.window.showErrorMessage(
+      "Please select only import lines. Empty lines and non-import lines are not allowed!"
+    );
+    return false;
+  }
 
   editor.edit((editBuilder) => {
     const range = new vscode.Range(
@@ -63,27 +78,6 @@ const sortInsideEditorOnClick = (): boolean => {
       editor.document.lineAt(endLine.range.start.line).text.length
     );
 
-    let lines: string[] = [];
-
-    for (let i = 0; i < imports.length; i++) {
-      lines.push(imports[i].text.replace(/(\r\n|\n|\r)/gm, ""));
-    }
-
-    console.log("2", {
-      lines,
-      imports,
-      start: startLine.range.start.line,
-      end: endLine.range.start.line,
-      selection,
-    });
-
-    if (
-      lines.length !==
-      endLine.range.start.line - startLine.range.start.line
-    ) {
-      vscode.window.showErrorMessage("Please select only import lines");
-      return false;
-    }
     editBuilder.replace(range, lines.join("\n"));
   });
 
