@@ -31,7 +31,6 @@ export function getQuoteToken() {
 export function shouldSortOnSave(): boolean {
   return getExtensionConfig().get("sortOnSave") as boolean;
 }
-
 export function getPathSortOrdering(): string[] {
   return getExtensionConfig().get("pathSortOrder") as string[];
 }
@@ -44,7 +43,11 @@ export const getSortEntireFile = (): boolean => {
   return getExtensionConfig().get("sortEntireFile") as boolean;
 };
 
+// Currently using
+export const getSortBy = (): string => {
+  return getExtensionConfig().get("sortBy") as string;
+};
+
 function getExtensionConfig() {
-  // console.log(vscode.workspace.getConfiguration("sortMyImports"));
   return vscode.workspace.getConfiguration("sortMyImports");
 }

@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
-import writeImports from "./writeImports";
-import { parseKeyImports, parseSelectedImports } from "./parseImportNodes";
-import { processImports } from "./processImports";
-// import { sortSelectedImports } from "./sortSelectedImports";
 import * as options from "./options";
+import writeImports from "./writeImports";
+import { processImports } from "./processImports";
+import { parseKeyImports, parseSelectedImports } from "./parseImportNodes";
+import { removeDuplicates } from "./sortingAlgorithms";
 
 const sortInsideEditorOnKey = (): boolean => {
   const editor = vscode.window.activeTextEditor;
@@ -68,6 +68,10 @@ const sortInsideEditorOnClick = (): boolean => {
       "Please select only import lines. Empty lines and non-import lines are not allowed!"
     );
     return false;
+  }
+
+  if (options.getSortOption() === "removeDuplicates") {
+    lines = removeDuplicates(lines);
   }
 
   editor.edit((editBuilder) => {

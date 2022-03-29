@@ -5,6 +5,10 @@ import {
   compareCaseInsensitive,
   compareImportType,
   compareLineLength,
+  compareLineLengthReverse,
+  getVariableCharacters,
+  compareVariableLength,
+  compareVariableLengthReverse,
 } from "./sortingAlgorithms";
 
 const processImports = (
@@ -29,9 +33,9 @@ const compareImportClauses = (
   a: TypescriptImport,
   b: TypescriptImport
 ): number => {
-  if (options.getSortOption() === "path") {
+  if (options.getSortBy() === "path") {
     return comparePath(a, b) || compareCaseInsensitive(a.path, b.path);
-  } else if (options.getSortOption() === "importName") {
+  } else if (options.getSortBy() === "importName") {
     return (
       compareImportType(a, b) ||
       (a.namespace &&
@@ -48,8 +52,18 @@ const compareImportClauses = (
         )) ||
       comparePath(a, b)
     );
-  } else {
+  } else if (options.getSortBy() === "variableLengthReverse") {
+    return compareVariableLengthReverse(a, b);
+  } else if (options.getSortBy() === "lineLength") {
     return compareLineLength(a, b) || compareCaseInsensitive(a.path, b.path);
+  } else if (options.getSortBy() === "lineLengthReverse") {
+    return (
+      compareLineLengthReverse(a, b) || compareCaseInsensitive(a.path, b.path)
+    );
+  } else if (options.getSortBy() === "variableLength") {
+    return compareVariableLength(a, b);
+  } else {
+    return 0;
   }
 };
 
