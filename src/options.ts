@@ -34,7 +34,6 @@ export function shouldSortOnSave(): boolean {
 export function getPathSortOrdering(): string[] {
   return getExtensionConfig().get("pathSortOrder") as string[];
 }
-
 export function getOmitSemicolon(): boolean {
   return getExtensionConfig().get("omitSemicolon") as boolean;
 }
