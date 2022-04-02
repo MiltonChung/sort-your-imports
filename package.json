@@ -52,7 +52,9 @@
             "variableLength",
             "variableLengthReverse",
             "path",
-            "importName"
+            "importName",
+            "natural",
+            "shuffle"
           ],
           "enumDescriptions": [
             "Sort by the length of each line. Longest to shortest",
@@ -60,7 +62,9 @@
             "Sort by the length of each the variable names. Longest to shortest",
             "Sort by the length of each the variable names. Shortest to longest",
             "Sort by the type of import path",
-            "Sort by the type and name of the import. Namespace imports are first, followed by default imports, named imports, and unnamed imports."
+            "Sort by the type and name of the import. Namespace imports are first, followed by default imports, named imports, and unnamed imports.",
+            "Sort alphabetically but groups multi-digit numbers together",
+            "Sort lines shuffled"
           ]
         },
         "sortMyImports.pathSortOrdering": {

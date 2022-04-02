@@ -3,7 +3,11 @@ import * as options from "./options";
 import writeImports from "./writeImports";
 import { processImports } from "./processImports";
 import { parseKeyImports, parseSelectedImports } from "./parseImportNodes";
-import { removeBlanks, removeDuplicates } from "./sortingAlgorithms";
+import {
+  removeDuplicates,
+  removeEmptyLines,
+  shuffleSorter,
+} from "./sortingAlgorithms";
 
 const sortInsideEditorOnKey = (): boolean => {
   const editor = vscode.window.activeTextEditor;
@@ -75,7 +79,11 @@ const sortInsideEditorOnClick = (): boolean => {
   }
 
   if (options.getRemoveEmptyLines()) {
-    lines = removeBlanks(lines);
+    lines = removeEmptyLines(lines);
+  }
+
+  if (options.getSortBy() === "shuffle") {
+    lines = shuffleSorter(lines);
   }
 
   editor.edit((editBuilder) => {

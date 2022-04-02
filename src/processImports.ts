@@ -8,6 +8,7 @@ import {
   compareLineLengthReverse,
   compareVariableLength,
   compareVariableLengthReverse,
+  naturalCompare,
 } from "./sortingAlgorithms";
 
 const processImports = (
@@ -32,7 +33,9 @@ const compareImportClauses = (
   a: TypescriptImport,
   b: TypescriptImport
 ): number => {
-  if (options.getSortBy() === "path") {
+  if (options.getSortBy() === "shuffle") {
+    return 0;
+  } else if (options.getSortBy() === "path") {
     return comparePath(a, b);
   } else if (options.getSortBy() === "importName") {
     return (
@@ -61,6 +64,8 @@ const compareImportClauses = (
     return (
       compareLineLengthReverse(a, b) || compareCaseInsensitive(a.path, b.path)
     );
+  } else if (options.getSortBy() === "natural") {
+    return naturalCompare(a, b) || compareCaseInsensitive(a.path, b.path);
   } else {
     return 0;
   }

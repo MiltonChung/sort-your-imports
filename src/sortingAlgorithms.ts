@@ -96,6 +96,18 @@ const getPathPriority = (path: string): number => {
   }
 };
 
+// Sorts alphabetically but groups multi-digit numbers together ==================================================
+let intlCollator: Intl.Collator;
+export const naturalCompare = (
+  a: TypescriptImport,
+  b: TypescriptImport
+): number => {
+  if (!intlCollator) {
+    intlCollator = new Intl.Collator(undefined, { numeric: true });
+  }
+  return intlCollator.compare(a.text, b.text);
+};
+
 // Compare Case Insensitive ==================================================
 export const compareCaseInsensitive = (a: string, b = ""): number => {
   return a.localeCompare(b, "en", { sensitivity: "base" });
@@ -106,7 +118,8 @@ export const removeDuplicates = (lines: string[]): string[] => {
   return Array.from(new Set(lines));
 };
 
-export const removeBlanks = (lines: string[]): string[] => {
+// Remove empty lines ==================================================
+export const removeEmptyLines = (lines: string[]): string[] => {
   let tempLines = [...lines];
   for (let i = 0; i < tempLines.length; ++i) {
     if (tempLines[i].trim() === "") {
@@ -115,4 +128,13 @@ export const removeBlanks = (lines: string[]): string[] => {
     }
   }
   return tempLines;
+};
+
+// Sort lines shuffled ==================================================
+export const shuffleSorter = (lines: string[]): string[] => {
+  for (let i = lines.length - 1; i > 0; i--) {
+    const rand = Math.floor(Math.random() * (i + 1));
+    [lines[i], lines[rand]] = [lines[rand], lines[i]];
+  }
+  return lines;
 };
