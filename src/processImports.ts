@@ -6,7 +6,6 @@ import {
   compareImportType,
   compareLineLength,
   compareLineLengthReverse,
-  getVariableCharacters,
   compareVariableLength,
   compareVariableLengthReverse,
 } from "./sortingAlgorithms";
@@ -34,7 +33,7 @@ const compareImportClauses = (
   b: TypescriptImport
 ): number => {
   if (options.getSortBy() === "path") {
-    return comparePath(a, b) || compareCaseInsensitive(a.path, b.path);
+    return comparePath(a, b);
   } else if (options.getSortBy() === "importName") {
     return (
       compareImportType(a, b) ||
@@ -52,6 +51,8 @@ const compareImportClauses = (
         )) ||
       comparePath(a, b)
     );
+  } else if (options.getSortBy() === "variableLength") {
+    return compareVariableLength(a, b);
   } else if (options.getSortBy() === "variableLengthReverse") {
     return compareVariableLengthReverse(a, b);
   } else if (options.getSortBy() === "lineLength") {
@@ -60,8 +61,6 @@ const compareImportClauses = (
     return (
       compareLineLengthReverse(a, b) || compareCaseInsensitive(a.path, b.path)
     );
-  } else if (options.getSortBy() === "variableLength") {
-    return compareVariableLength(a, b);
   } else {
     return 0;
   }

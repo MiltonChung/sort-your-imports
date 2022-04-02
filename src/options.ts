@@ -31,9 +31,7 @@ export function getQuoteToken() {
 export function shouldSortOnSave(): boolean {
   return getExtensionConfig().get("sortOnSave") as boolean;
 }
-export function getPathSortOrdering(): string[] {
-  return getExtensionConfig().get("pathSortOrder") as string[];
-}
+
 export function getOmitSemicolon(): boolean {
   return getExtensionConfig().get("omitSemicolon") as boolean;
 }
@@ -45,6 +43,18 @@ export const getSortEntireFile = (): boolean => {
 // Currently using
 export const getSortBy = (): string => {
   return getExtensionConfig().get("sortBy") as string;
+};
+
+export function getPathSortOrdering(): string[] {
+  return getExtensionConfig().get("pathSortOrdering") as string[];
+}
+
+export const getRemoveDuplicatesOption = (): boolean => {
+  return getExtensionConfig().get("removeDuplicates") as boolean;
+};
+
+export const getRemoveEmptyLines = (): boolean => {
+  return getExtensionConfig().get("removeEmptyLines") as boolean;
 };
 
 function getExtensionConfig() {

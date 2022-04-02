@@ -32,29 +32,48 @@
       "type": "object",
       "title": "Sort My Imports",
       "properties": {
-        "sortMyImports.filterBlankLines": {
+        "sortMyImports.removeDuplicates": {
           "type": "boolean",
-          "default": false,
-          "description": "Filter out blank (empty or whitespace-only) lines."
+          "default": true,
+          "description": "Remove duplicate imports when sorting your imports."
         },
-        "sortMyImports.sortEntireFile": {
+        "sortMyImports.removeEmptyLines": {
           "type": "boolean",
           "default": false,
-          "description": "Sort entire file if no selection is active."
+          "description": "Remove empty lines when sorting your imports."
         },
         "sortMyImports.sortBy": {
           "type": "string",
           "default": "lineLength",
+          "description": "Different sorting methods for your import sorting needs. Sorting by line length is the default.",
           "enum": [
             "lineLength",
             "lineLengthReverse",
             "variableLength",
             "variableLengthReverse",
-            "importName",
-            "path"
+            "path",
+            "importName"
           ],
           "enumDescriptions": [
-            "Different sorting methods for your import sorting needs. Sorting by line length is the default."
+            "Sort by the length of each line. Longest to shortest",
+            "Sort by the length of each line. Shortest to longest",
+            "Sort by the length of each the variable names. Longest to shortest",
+            "Sort by the length of each the variable names. Shortest to longest",
+            "Sort by the type of import path",
+            "Sort by the type and name of the import. Namespace imports are first, followed by default imports, named imports, and unnamed imports."
+          ]
+        },
+        "sortMyImports.pathSortOrdering": {
+          "type": "string",
+          "default": "['relativeDownLevel', 'relativeUpLevel', 'package']",
+          "description": "An array describing the order in which imports should be sorted by paths. Only applicable if sort by is set to path. 1: package - Any import path that does not begin with '.' 2: relativeUpLevel - Any import path that begins with '../' 3: relativeDownLevel - Any import path that begins with './'",
+          "enum": [
+            "['relativeDownLevel', 'relativeUpLevel', 'package']",
+            "['relativeDownLevel', 'package', 'relativeUpLevel']",
+            "['relativeUpLevel', 'relativeDownLevel', 'package']",
+            "['relativeUpLevel', 'package', 'relativeDownLevel']",
+            "['package', 'relativeUpLevel', 'relativeDownLevel']",
+            "['package', 'relativeDownLevel', 'relativeUpLevel']"
           ]
         }
       }

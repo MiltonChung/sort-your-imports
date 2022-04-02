@@ -3,7 +3,7 @@ import * as options from "./options";
 import writeImports from "./writeImports";
 import { processImports } from "./processImports";
 import { parseKeyImports, parseSelectedImports } from "./parseImportNodes";
-import { removeDuplicates } from "./sortingAlgorithms";
+import { removeBlanks, removeDuplicates } from "./sortingAlgorithms";
 
 const sortInsideEditorOnKey = (): boolean => {
   const editor = vscode.window.activeTextEditor;
@@ -70,8 +70,12 @@ const sortInsideEditorOnClick = (): boolean => {
     return false;
   }
 
-  if (options.getSortOption() === "removeDuplicates") {
+  if (options.getRemoveDuplicatesOption()) {
     lines = removeDuplicates(lines);
+  }
+
+  if (options.getRemoveEmptyLines()) {
+    lines = removeBlanks(lines);
   }
 
   editor.edit((editBuilder) => {

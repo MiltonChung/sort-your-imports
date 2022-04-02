@@ -1,6 +1,7 @@
 import * as options from "./options";
 import { TypescriptImport } from "./types";
 
+// Compare Import variable length ==================================
 export const compareVariableLengthReverse = (
   a: TypescriptImport,
   b: TypescriptImport
@@ -80,6 +81,7 @@ export const comparePath = (
   a: TypescriptImport,
   b: TypescriptImport
 ): number => {
+  console.log(options.getPathSortOrdering(), "ordering");
   return getPathPriority(a.path) - getPathPriority(b.path);
 };
 
@@ -102,4 +104,15 @@ export const compareCaseInsensitive = (a: string, b = ""): number => {
 // Remove duplicate imports ==================================================
 export const removeDuplicates = (lines: string[]): string[] => {
   return Array.from(new Set(lines));
+};
+
+export const removeBlanks = (lines: string[]): string[] => {
+  let tempLines = [...lines];
+  for (let i = 0; i < tempLines.length; ++i) {
+    if (tempLines[i].trim() === "") {
+      tempLines.splice(i, 1);
+      i--;
+    }
+  }
+  return tempLines;
 };
