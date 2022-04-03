@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as options from "./options";
-import writeImports from "./writeImports";
+import { writeImports } from "./writeImports";
 import { processImports } from "./processImports";
 import { parseKeyImports, parseSelectedImports } from "./parseImportNodes";
 import {
@@ -9,6 +9,7 @@ import {
   shuffleSorter,
 } from "./sortingAlgorithms";
 
+// Sort the entire file when user clicks f10
 const sortInsideEditorOnKey = (): boolean => {
   const editor = vscode.window.activeTextEditor;
   if (!editor) {
@@ -33,27 +34,40 @@ const sortInsideEditorOnKey = (): boolean => {
       editBuilder.replace(edit.range, edit.newText);
     });
   });
+
   return true;
+};
+
+export const sortInsideEditorOnSave = (
+  document: vscode.TextDocument
+): vscode.TextEdit[] => {
+  let imports = parseKeyImports(document);
+  imports = processImports(imports);
+  const sortedImportText = writeImports(imports);
+
+  const edits: vscode.TextEdit[] = imports.map(
+    (importClause: { range: vscode.Range }) =>
+      vscode.TextEdit.delete(importClause.range)
+  );
+
+  edits.push(
+    vscode.TextEdit.insert(new vscode.Position(0, 0), sortedImportText)
+  );
+
+  return edits;
 };
 
 /* 
 write the imports and push the new edits to the editor
 */
-const sortInsideEditorOnClick = (): boolean => {
+const sortInsideEditorOnSelected = (): boolean => {
   const editor = vscode.window.activeTextEditor;
   if (!editor) {
     return false;
   }
   const selection = editor.selection;
-  let startLine: vscode.TextLine, endLine: vscode.TextLine;
-
-  if (selection.isEmpty && options.getSortEntireFile() === true) {
-    startLine = editor.document.lineAt(0);
-    endLine = editor.document.lineAt(editor.document.lineCount - 1);
-  } else {
-    startLine = editor.document.lineAt(selection.start.line);
-    endLine = editor.document.lineAt(selection.end.line);
-  }
+  const startLine = editor.document.lineAt(selection.start.line);
+  const endLine = editor.document.lineAt(selection.end.line);
 
   let imports = parseSelectedImports(editor, startLine, endLine);
   imports = processImports(imports);
@@ -100,4 +114,4 @@ const sortInsideEditorOnClick = (): boolean => {
   return true;
 };
 
-export { sortInsideEditorOnKey, sortInsideEditorOnClick };
+export { sortInsideEditorOnKey, sortInsideEditorOnSelected };

@@ -14,17 +14,18 @@
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
     "onLanguage:typescriptreact",
-    "onCommand:sort-your-imports.sortMyImportsOnKey"
+    "onCommand:sort-your-imports.sortMyImportsOnKey",
+    "onCommand:sort-your-imports.sortMyImportsOnSelected"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "sort-your-imports.sortMyImportsOnKey",
-        "title": "Sort My Imports (Entire File)"
+        "title": "Sort My Imports: All imports on key press"
       },
       {
-        "command": "sort-your-imports.sortMyImportsOnClick",
+        "command": "sort-your-imports.sortMyImportsOnSelected",
         "title": "Sort My Imports: Sort selected imports"
       }
     ],
@@ -41,6 +42,30 @@
           "type": "boolean",
           "default": false,
           "description": "Remove empty lines when sorting your imports."
+        },
+        "sortMyImports.sortOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically sort your imports when saving a file."
+        },
+        "sortMyImports.omitSemicolon": {
+          "type": "boolean",
+          "default": false,
+          "description": "If set to true, the trailing semicolon will be omitted."
+        },
+        "sortMyImports.quoteStyle": {
+          "type": "string",
+          "default": "single",
+          "description": "The type of quotation mark to use. single(default) or double.",
+          "enum": [
+            "double",
+            "single"
+          ]
+        },
+        "sortMyImports.getMaxNamedImportsPerSingleLine": {
+          "type": "number",
+          "default": 50,
+          "description": "The number of named imports to allow on a single line. If a single import has more than this number, they will be broken up onto separate lines."
         },
         "sortMyImports.sortBy": {
           "type": "string",
@@ -86,14 +111,14 @@
       "editor/context": [
         {
           "when": "resourceLangId == typescript || resourceLangId == javascript || resourceLangId == javascriptreact || resourceLangId == typescriptreact",
-          "command": "sort-your-imports.sortMyImportsOnClick",
+          "command": "sort-your-imports.sortMyImportsOnSelected",
           "group": "1_modification"
         }
       ],
       "editor/title/context": [
         {
           "when": "resourceLangId == typescript || resourceLangId == javascript || resourceLangId == javascriptreact || resourceLangId == typescriptreact",
-          "command": "sort-your-imports.sortMyImportsOnClick",
+          "command": "sort-your-imports.sortMyImportsOnSelected",
           "group": "1_modification"
         }
       ]

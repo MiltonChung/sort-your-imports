@@ -1,42 +1,57 @@
 import * as vscode from "vscode";
-import { isFileJavascript, isFileTypescript } from "./util";
 import {
-  sortInsideEditorOnClick,
   sortInsideEditorOnKey,
+  sortInsideEditorOnSelected,
 } from "./sortInsideEditor";
+import {
+  configure,
+  disableFileWatcher,
+  isFileJavascript,
+  isFileTypescript,
+} from "./util";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log(
     'Congratulations, your extension "sort-your-imports" is now active!'
   );
 
-  let sortOnKey = vscode.commands.registerCommand(
+  const sortOnKey = vscode.commands.registerCommand(
     "sort-your-imports.sortMyImportsOnKey",
     () => {
       if (isFileJavascript() || isFileTypescript()) {
         if (sortInsideEditorOnKey()) {
           vscode.window.showInformationMessage("Sorted your imports!");
         } else {
-          vscode.window.showErrorMessage("Could not sort your imports!");
+          vscode.window.showErrorMessage(
+            "Sorry, something went wrong! Could not sort your imports."
+          );
         }
       }
     }
   );
 
-  const sortOnClick = vscode.commands.registerCommand(
-    "sort-your-imports.sortMyImportsOnClick",
+  const sortOnSelected = vscode.commands.registerCommand(
+    "sort-your-imports.sortMyImportsOnSelected",
     () => {
       if (isFileJavascript() || isFileTypescript()) {
-        if (sortInsideEditorOnClick()) {
+        if (sortInsideEditorOnSelected()) {
           vscode.window.showInformationMessage("Sorted your imports!");
         } else {
-          vscode.window.showErrorMessage("Could not sort your imports!");
+          vscode.window.showErrorMessage(
+            "Sorry, something went wrong! Could not sort your imports."
+          );
         }
       }
     }
   );
 
-  context.subscriptions.push(sortOnKey, sortOnClick);
+  const configurationWatcher =
+    vscode.workspace.onDidChangeConfiguration(configure);
+  configure();
+
+  context.subscriptions.push(sortOnKey, sortOnSelected, configurationWatcher);
 }
 
-export function deactivate() {}
+export function deactivate() {
+  disableFileWatcher();
+}
