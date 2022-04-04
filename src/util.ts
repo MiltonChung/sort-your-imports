@@ -49,6 +49,7 @@ export const disableFileWatcher = () => {
 };
 
 export const sortOnSave = (event: vscode.TextDocumentWillSaveEvent) => {
+  console.log("sortOnSave");
   if (isSupportedLanguage(event.document.languageId)) {
     event.waitUntil(
       new Promise<vscode.TextEdit[]>((resolve, _) => {

@@ -81,7 +81,6 @@ export const comparePath = (
   a: TypescriptImport,
   b: TypescriptImport
 ): number => {
-  console.log(options.getPathSortOrdering(), "ordering");
   return getPathPriority(a.path) - getPathPriority(b.path);
 };
 
@@ -114,8 +113,25 @@ export const compareCaseInsensitive = (a: string, b = ""): number => {
 };
 
 // Remove duplicate imports ==================================================
-export const removeDuplicates = (lines: string[]): string[] => {
-  return Array.from(new Set(lines));
+export const removeDuplicates = (
+  lines: string[] | TypescriptImport[]
+): string[] | TypescriptImport[] => {
+  if (instanceOfTypescriptImport(lines)) {
+    const hi = lines.filter(
+      (value, index, self) =>
+        index === self.findIndex((t) => t.text === value.text)
+    );
+    console.log({ hi });
+    return hi;
+  } else {
+    return Array.from(new Set(lines));
+  }
+};
+
+const instanceOfTypescriptImport = (
+  object: any
+): object is TypescriptImport[] => {
+  return "text" in object[0];
 };
 
 // Remove empty lines ==================================================
@@ -127,14 +143,24 @@ export const removeEmptyLines = (lines: string[]): string[] => {
       i--;
     }
   }
+
   return tempLines;
 };
 
 // Sort lines shuffled ==================================================
-export const shuffleSorter = (lines: string[]): string[] => {
-  for (let i = lines.length - 1; i > 0; i--) {
-    const rand = Math.floor(Math.random() * (i + 1));
-    [lines[i], lines[rand]] = [lines[rand], lines[i]];
+export const shuffleSorter = (
+  lines: string[] | TypescriptImport[]
+): string[] | TypescriptImport[] => {
+  if (instanceOfTypescriptImport(lines)) {
+    for (let i = lines.length - 1; i > 0; i--) {
+      const rand = Math.floor(Math.random() * (i + 1));
+      [lines[i].text, lines[rand].text] = [lines[rand].text, lines[i].text];
+    }
+  } else {
+    for (let i = lines.length - 1; i > 0; i--) {
+      const rand = Math.floor(Math.random() * (i + 1));
+      [lines[i], lines[rand]] = [lines[rand], lines[i]];
+    }
   }
   return lines;
 };

@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import * as options from "./options";
+import { TypescriptImport } from "./types";
 import { writeImports } from "./writeImports";
 import { processImports } from "./processImports";
 import { parseKeyImports, parseSelectedImports } from "./parseImportNodes";
@@ -18,12 +19,18 @@ const sortInsideEditorOnKey = (): boolean => {
 
   let imports = parseKeyImports(editor.document);
   imports = processImports(imports);
-  const sortedImportText = writeImports(imports);
 
   const edits: vscode.TextEdit[] = imports.map(
-    (importClause: { range: vscode.Range }) =>
-      vscode.TextEdit.delete(importClause.range)
+    (importClause: { range: vscode.Range }) => {
+      return vscode.TextEdit.delete(importClause.range);
+    }
   );
+
+  if (options.getRemoveDuplicatesOption()) {
+    imports = removeDuplicates(imports) as TypescriptImport[];
+  }
+
+  const sortedImportText = writeImports(imports);
 
   edits.push(
     vscode.TextEdit.insert(new vscode.Position(0, 0), sortedImportText)
@@ -38,17 +45,23 @@ const sortInsideEditorOnKey = (): boolean => {
   return true;
 };
 
+// TODO: make this delete duplocates too
 export const sortInsideEditorOnSave = (
   document: vscode.TextDocument
 ): vscode.TextEdit[] => {
   let imports = parseKeyImports(document);
   imports = processImports(imports);
-  const sortedImportText = writeImports(imports);
 
   const edits: vscode.TextEdit[] = imports.map(
     (importClause: { range: vscode.Range }) =>
       vscode.TextEdit.delete(importClause.range)
   );
+
+  if (options.getRemoveDuplicatesOption()) {
+    imports = removeDuplicates(imports) as TypescriptImport[];
+  }
+
+  const sortedImportText = writeImports(imports);
 
   edits.push(
     vscode.TextEdit.insert(new vscode.Position(0, 0), sortedImportText)
@@ -89,15 +102,15 @@ const sortInsideEditorOnSelected = (): boolean => {
   }
 
   if (options.getRemoveDuplicatesOption()) {
-    lines = removeDuplicates(lines);
+    lines = removeDuplicates(lines) as string[];
   }
 
   if (options.getRemoveEmptyLines()) {
-    lines = removeEmptyLines(lines);
+    lines = removeEmptyLines(lines) as string[];
   }
 
   if (options.getSortBy() === "shuffle") {
-    lines = shuffleSorter(lines);
+    lines = shuffleSorter(lines) as string[];
   }
 
   editor.edit((editBuilder) => {
