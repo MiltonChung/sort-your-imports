@@ -117,12 +117,10 @@ export const removeDuplicates = (
   lines: string[] | TypescriptImport[]
 ): string[] | TypescriptImport[] => {
   if (instanceOfTypescriptImport(lines)) {
-    const hi = lines.filter(
+    return lines.filter(
       (value, index, self) =>
         index === self.findIndex((t) => t.text === value.text)
     );
-    console.log({ hi });
-    return hi;
   } else {
     return Array.from(new Set(lines));
   }

@@ -89,7 +89,7 @@
             "Sort by the type of import path",
             "Sort by the type and name of the import. Namespace imports are first, followed by default imports, named imports, and unnamed imports.",
             "Sort alphabetically but groups multi-digit numbers together",
-            "Sort lines shuffled"
+            "Sort lines shuffled (only in on select sort)"
           ]
         },
         "sortMyImports.pathSortOrdering": {
