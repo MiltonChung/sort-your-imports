@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import * as options from "./options";
 import { DestructedImport, TypescriptImport } from "./types";
 
 const name = `((?!\\d)(?:(?!\\s)[$\\w\\u0080-\\uFFFF]|\\\\u[\\da-fA-F]{4}|\\\\u\\{[\\da-fA-F]+\\})+)`;

@@ -11,10 +11,6 @@ import {
 } from "./util";
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log(
-    'Congratulations, your extension "sort-your-imports" is now active!'
-  );
-
   const sortOnKey = vscode.commands.registerCommand(
     "sort-your-imports.sortMyImportsOnKey",
     () => {

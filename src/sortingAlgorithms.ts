@@ -31,7 +31,7 @@ export const getVariableCharacters = (line: string): string => {
   return last;
 };
 
-// Compare Import Line Length Reverse ==================================================
+// Compare Import Line Length ==================================================
 export const compareLineLengthReverse = (
   a: TypescriptImport,
   b: TypescriptImport
@@ -39,7 +39,6 @@ export const compareLineLengthReverse = (
   return compareLineLength(a, b) * -1;
 };
 
-// Compare Import Line Length ==================================================
 export const compareLineLength = (
   a: TypescriptImport | string,
   b: TypescriptImport | string
@@ -112,6 +111,12 @@ export const compareCaseInsensitive = (a: string, b = ""): number => {
   return a.localeCompare(b, "en", { sensitivity: "base" });
 };
 
+const instanceOfTypescriptImport = (
+  object: any
+): object is TypescriptImport[] => {
+  return "text" in object[0];
+};
+
 // Remove duplicate imports ==================================================
 export const removeDuplicates = (
   lines: string[] | TypescriptImport[]
@@ -124,12 +129,6 @@ export const removeDuplicates = (
   } else {
     return Array.from(new Set(lines));
   }
-};
-
-const instanceOfTypescriptImport = (
-  object: any
-): object is TypescriptImport[] => {
-  return "text" in object[0];
 };
 
 // Remove empty lines ==================================================

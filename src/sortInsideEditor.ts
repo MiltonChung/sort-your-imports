@@ -45,8 +45,7 @@ const sortInsideEditorOnKey = (): boolean => {
   return true;
 };
 
-// TODO: make this delete duplocates too
-export const sortInsideEditorOnSave = (
+const sortInsideEditorOnSave = (
   document: vscode.TextDocument
 ): vscode.TextEdit[] => {
   let imports = parseKeyImports(document);
@@ -127,4 +126,8 @@ const sortInsideEditorOnSelected = (): boolean => {
   return true;
 };
 
-export { sortInsideEditorOnKey, sortInsideEditorOnSelected };
+export {
+  sortInsideEditorOnKey,
+  sortInsideEditorOnSelected,
+  sortInsideEditorOnSave,
+};
