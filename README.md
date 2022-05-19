@@ -2,6 +2,8 @@
 
 Sort your import statements easily by just pressing a key! Sorting options include but not limited to: import line length, variable name, import path, etc...
 
+Link to marketplace: https://marketplace.visualstudio.com/items?itemName=Mewton.sort-your-imports
+
 Supports: JavaScript and TypeScript
 
 ## Features
